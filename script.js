@@ -48,6 +48,7 @@ function convertWooCSVtoJSON(rows){
     });
 }
 
+// Render products with carousel
 function renderProducts(){
     const container = document.getElementById('products-container');
     if(!container) return;
@@ -57,11 +58,21 @@ function renderProducts(){
         const card = document.createElement('div');
         card.className='product-card';
 
-        // Image + Video carousel
+        // Combine images and videos
+        const media = [...product.images, ...product.videos];
+
         let carouselHTML = '<div class="image-carousel">';
-        product.images.forEach(img=>{ carouselHTML += `<img src="${img}" alt="${product.name}">`; });
-        product.videos.forEach(vid=>{ carouselHTML += `<video controls><source src="${vid}" type="video/mp4"></video>`; });
+        media.forEach(src=>{
+            if(src.endsWith('.mp4')){
+                carouselHTML += `<video class="carousel-item" controls><source src="${src}" type="video/mp4"></video>`;
+            } else {
+                carouselHTML += `<img class="carousel-item" src="${src}" alt="${product.name}">`;
+            }
+        });
         carouselHTML += '</div>';
+
+        // Dots
+        carouselHTML += `<div class="carousel-dots">${media.map((_,i)=>`<span data-index="${i}"></span>`).join('')}</div>`;
 
         // Variations
         const variationsHTML = product.variations.map(v=>{
@@ -77,6 +88,29 @@ function renderProducts(){
             <button onclick="addToCart(${product.id})">Add to Cart</button>
         `;
         container.appendChild(card);
+
+        setupCarousel(card);
+    });
+}
+
+// Setup swipeable carousel with dots
+function setupCarousel(card){
+    const carousel = card.querySelector('.image-carousel');
+    const dots = card.querySelectorAll('.carousel-dots span');
+    if(!carousel || dots.length===0) return;
+
+    const updateDots = ()=>{
+        const index = Math.round(carousel.scrollLeft / carousel.clientWidth);
+        dots.forEach(d=>d.classList.remove('active'));
+        if(dots[index]) dots[index].classList.add('active');
+    };
+
+    carousel.addEventListener('scroll', updateDots);
+    updateDots();
+
+    // Click dots
+    dots.forEach((dot,i)=>{
+        dot.addEventListener('click', ()=>{ carousel.scrollLeft = i * carousel.clientWidth; });
     });
 }
 
@@ -117,5 +151,6 @@ async function loadCart(){
     document.getElementById('cart-total').textContent=totalPrice.toFixed(0);
 }
 
+// Initialize
 updateCartCount();
 loadCart();
