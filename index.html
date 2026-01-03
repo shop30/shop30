@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple E-Commerce Grid</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Product Grid</h1>
+<input type="file" id="csvFile" accept=".csv,.tsv">
+
+<div id="productGrid" class="grid"></div>
+
+<!-- Modal for full details -->
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<script>
+const csvInput = document.getElementById('csvFile');
+const grid = document.getElementById('productGrid');
+const modal = document.getElementById('productModal');
+const modalBody = document.getElementById('modalBody');
+const closeBtn = document.querySelector('.close');
+
+csvInput.addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(event){
+        parseCSV(event.target.result);
+    }
+    reader.readAsText(file);
+});
+
+function parseCSV(text){
+    const lines = text.trim().split(/\r?\n/);
+    if(lines.length < 2) return;
+
+    const delimiter = lines[0].includes("\t") ? "\t" : ",";
+    const headers = lines[0].split(delimiter).map(h=>h.trim());
+    const products = {};
+
+    for(let i=1; i<lines.length; i++){
+        if(!lines[i].trim()) continue;
+
+        const values = lines[i].split(delimiter);
+        const row = {};
+        headers.forEach((h, idx) => row[h] = values[idx]?.trim() || "");
+
+        if(!row.handle) continue;
+
+        if(!products[row.handle]){
+            products[row.handle] = {
+                title: row.title,
+                description: row.description,
+                price: row.price,
+                media: []
+            };
+        }
+
+        if(row.media_url){
+            products[row.handle].media.push(row.media_url);
+        }
+    }
+
+    renderProducts(Object.values(products));
+}
+
+function renderProducts(products){
+    grid.innerHTML = "";
+    products.forEach(p=>{
+        const card = document.createElement("div");
+        card.className = "product-card";
+
+        // Use first media as thumbnail
+        const media = p.media[0] || "";
+        let mediaElement;
+        if(media.endsWith(".mp4") || media.endsWith(".webm")){
+            mediaElement = document.createElement("video");
+            mediaElement.src = media;
+            mediaElement.muted = true;
+            mediaElement.autoplay = true;
+            mediaElement.loop = true;
+        } else {
+            mediaElement = document.createElement("img");
+            mediaElement.src = media;
+        }
+
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "title";
+        titleDiv.textContent = p.title;
+
+        const priceDiv = document.createElement("div");
+        priceDiv.className = "price";
+        priceDiv.textContent = "Rs " + p.price;
+
+        card.appendChild(mediaElement);
+        card.appendChild(titleDiv);
+        card.appendChild(priceDiv);
+
+        // Show full details on click
+        card.addEventListener("click", ()=>{
+            showModal(p);
+        });
+
+        grid.appendChild(card);
+    });
+}
+
+function showModal(product){
+    modalBody.innerHTML = `<h2>${product.title}</h2>
+        <p>${product.description}</p>
+        <p><strong>Price:</strong> Rs ${product.price}</p>`;
+
+    product.media.forEach(m=>{
+        let el;
+        if(m.endsWith(".mp4") || m.endsWith(".webm")){
+            el = document.createElement("video");
+            el.src = m;
+            el.controls = true;
+        } else {
+            el = document.createElement("img");
+            el.src = m;
+        }
+        modalBody.appendChild(el);
+    });
+
+    modal.style.display = "flex";
+}
+
+// Close modal
+closeBtn.onclick = ()=> modal.style.display = "none";
+window.onclick = e=> { if(e.target==modal) modal.style.display = "none"; }
+</script>
+
+</body>
+</html>
