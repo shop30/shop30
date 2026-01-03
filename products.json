@@ -1,0 +1,58 @@
+[
+    {
+        "id": 1,
+        "name": "Red Sneakers",
+        "sku": "RS-001",
+        "description": "Comfortable red sneakers for everyday wear.",
+        "categories": ["Shoes", "Men"],
+        "images": [
+            "https://via.placeholder.com/200/FF0000/FFFFFF?text=Sneaker+1",
+            "https://via.placeholder.com/200/FF5555/FFFFFF?text=Sneaker+2"
+        ],
+        "videos": [
+            "https://sample-videos.com/video123/mp4/240/big_buck_bunny_240p_1mb.mp4"
+        ],
+        "variations": [
+            {"attribute": "Size", "options": ["7", "8", "9", "10"]},
+            {"attribute": "Color", "options": ["Red", "Maroon"]}
+        ],
+        "price": 59.99,
+        "stock": 20
+    },
+    {
+        "id": 2,
+        "name": "Blue Jeans",
+        "sku": "BJ-002",
+        "description": "Classic blue jeans for casual wear.",
+        "categories": ["Pants", "Men"],
+        "images": [
+            "https://via.placeholder.com/200/0000FF/FFFFFF?text=Jeans+1",
+            "https://via.placeholder.com/200/5555FF/FFFFFF?text=Jeans+2"
+        ],
+        "videos": [],
+        "variations": [
+            {"attribute": "Size", "options": ["S", "M", "L", "XL"]},
+            {"attribute": "Fit", "options": ["Regular", "Slim"]}
+        ],
+        "price": 79.99,
+        "stock": 15
+    },
+    {
+        "id": 3,
+        "name": "Black T-Shirt",
+        "sku": "TS-003",
+        "description": "Soft cotton t-shirt in black.",
+        "categories": ["Shirts", "Men"],
+        "images": [
+            "https://via.placeholder.com/200/000000/FFFFFF?text=T-Shirt+1",
+            "https://via.placeholder.com/200/333333/FFFFFF?text=T-Shirt+2"
+        ],
+        "videos": [],
+        "variations": [
+            {"attribute": "Size", "options": ["S", "M", "L", "XL"]},
+            {"attribute": "Color", "options": ["Black", "Gray"]}
+        ],
+        "price": 25.99,
+        "stock": 50
+    }
+]
