@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Products - Test Store</title>
+    <title>Products - CSV Demo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>My WooCommerce-Style Demo Store</h1>
+        <h1>WooCommerce CSV Demo Store</h1>
         <nav>
             <a href="index.html">Home</a> |
             <a href="products.html">Products</a> |
@@ -17,9 +17,12 @@
 
     <main>
         <h2>Products</h2>
+        <input type="file" id="csv-upload" accept=".csv">
         <div id="products-container" class="products-grid"></div>
     </main>
 
+    <!-- PapaParse CSV parser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
