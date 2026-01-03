@@ -32,8 +32,26 @@ main {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 15px;
+}
+
+/* Columns for desktop, tablet, mobile */
+@media (min-width: 1025px) {
+    .products-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .product-card {
@@ -43,22 +61,6 @@ main {
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-}
-
-.product-card .image-carousel {
-    width: 100%;
-    overflow-x: auto;
-    display: flex;
-    scroll-snap-type: x mandatory;
-}
-
-.product-card .image-carousel img,
-.product-card .image-carousel video {
-    flex: 0 0 100%;
-    max-height: 180px;
-    object-fit: cover;
-    scroll-snap-align: start;
 }
 
 .product-card h3 {
@@ -69,7 +71,7 @@ main {
     text-overflow: ellipsis;
 }
 
-.product-card p.price {
+.product-card .price {
     margin: 0 8px 8px 8px;
     font-weight: bold;
     color: #e60000;
@@ -89,9 +91,44 @@ main {
     background: #0d6efd;
 }
 
-/* Mobile styling */
-@media (max-width: 600px) {
-    .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+/* Carousel */
+.product-card .image-carousel {
+    width: 100%;
+    overflow-x: auto;
+    display: flex;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+}
+
+.carousel-item {
+    flex: 0 0 100%;
+    max-height: 180px;
+    object-fit: cover;
+    scroll-snap-align: start;
+}
+
+/* Dots navigation */
+.carousel-dots {
+    text-align: center;
+    margin: 4px 0;
+}
+
+.carousel-dots span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #ccc;
+    border-radius: 50%;
+    margin: 0 3px;
+    cursor: pointer;
+}
+
+.carousel-dots span.active {
+    background: #1e90ff;
+}
+
+/* Hide scrollbar */
+.image-carousel::-webkit-scrollbar {
+    display: none;
 }
