@@ -1,6 +1,5 @@
-let products = []; // store parsed products
+let products = [];
 
-// CSV Upload
 document.getElementById('csv-upload')?.addEventListener('change', function(e){
     const file = e.target.files[0];
     if(!file) return;
@@ -15,7 +14,6 @@ document.getElementById('csv-upload')?.addEventListener('change', function(e){
     });
 });
 
-// Convert WooCommerce CSV to JSON
 function convertWooCSVtoJSON(rows){
     return rows.map((row,index)=>{
         const categories = row.Categories ? row.Categories.split(',').map(c=>c.trim()) : [];
@@ -50,7 +48,6 @@ function convertWooCSVtoJSON(rows){
     });
 }
 
-// Render products
 function renderProducts(){
     const container = document.getElementById('products-container');
     if(!container) return;
@@ -60,22 +57,24 @@ function renderProducts(){
         const card = document.createElement('div');
         card.className='product-card';
 
-        const imagesHTML = product.images.map(url=>`<img src="${url}" alt="${product.name}">`).join('');
+        // Image + Video carousel
+        let carouselHTML = '<div class="image-carousel">';
+        product.images.forEach(img=>{ carouselHTML += `<img src="${img}" alt="${product.name}">`; });
+        product.videos.forEach(vid=>{ carouselHTML += `<video controls><source src="${vid}" type="video/mp4"></video>`; });
+        carouselHTML += '</div>';
+
+        // Variations
         const variationsHTML = product.variations.map(v=>{
             const options = v.options.map(opt=>`<option value="${opt}">${opt}</option>`).join('');
             return `<label>${v.attribute}: <select data-attr="${v.attribute}">${options}</select></label>`;
         }).join('<br>');
-        const videosHTML = product.videos.map(url=>`<video width="200" controls><source src="${url}" type="video/mp4"></video>`).join('');
 
         card.innerHTML = `
-            ${imagesHTML}
-            <h3>${product.name}</h3>
-            <p>${product.description}</p>
-            <p>Categories: ${product.categories.join(', ')}</p>
-            ${variationsHTML}<br><br>
-            <p>Price: $${product.price.toFixed(2)}</p>
-            <button class="btn" onclick="addToCart(${product.id})">Add to Cart</button>
-            ${videosHTML}
+            ${carouselHTML}
+            <h3 title="${product.name}">${product.name}</h3>
+            ${variationsHTML}<br>
+            <p class="price">Rs ${product.price.toFixed(0)}</p>
+            <button onclick="addToCart(${product.id})">Add to Cart</button>
         `;
         container.appendChild(card);
     });
@@ -112,12 +111,11 @@ async function loadCart(){
         totalPrice+=price;
         const div = document.createElement('div');
         div.className='product-card';
-        div.innerHTML = `<h3>${product.name}</h3><p>Quantity: ${item.quantity}</p><p>Price: $${price.toFixed(2)}</p>`;
+        div.innerHTML = `<h3>${product.name}</h3><p>Qty: ${item.quantity}</p><p>Price: Rs ${price.toFixed(0)}</p>`;
         container.appendChild(div);
     });
-    document.getElementById('cart-total').textContent=totalPrice.toFixed(2);
+    document.getElementById('cart-total').textContent=totalPrice.toFixed(0);
 }
 
-// Init cart count
 updateCartCount();
 loadCart();
